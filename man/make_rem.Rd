@@ -4,7 +4,13 @@
 \alias{make_rem}
 \title{Make a Relative Elevation Model (REM)}
 \usage{
-make_rem(dem, centerline = NULL, n_points = 1000, quiet = TRUE)
+make_rem(
+  dem,
+  centerline = NULL,
+  n_points = 1000,
+  algorithm = "invdist:power=1",
+  quiet = TRUE
+)
 }
 \arguments{
 \item{dem}{Either a SpatRaster (created via \code{\link[terra:rast]{terra::rast()}}) or an object
@@ -17,6 +23,10 @@ a name in OpenStreetMap will be used instead.}
 
 \item{n_points}{The number of sample points along the river to base
 interpolation on. More points will make interpolation take longer.}
+
+\item{algorithm}{A string to control the interpolation algorithm.
+See the gdal_grid documentation at \url{https://gdal.org/programs/gdal_grid.html}
+for the available algorithms and customization options.}
 
 \item{quiet}{Boolean: should execution proceed "quietly", without messages
 (\code{TRUE}) or should progress updates be posted during centerline download and
