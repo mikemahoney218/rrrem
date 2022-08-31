@@ -57,13 +57,7 @@ dem <- sf::st_as_sf(
   terrainr::get_tiles() |> 
   purrr::chuck("elevation") |> 
   terrainr::merge_rasters()
-
-terra::plot(
-  terra::rast(dem)
-)
 ```
-
-![](man/figures/README-unnamed-chunk-2-1.png)<!-- -->
 
 With our data downloaded, we’re ready to move on to actually using
 rrrem. The main workhorse of this package is the `make_rem()` function,
@@ -107,30 +101,36 @@ hillshade <- terra::shade(
 trimmed_rem <- rem
 trimmed_rem[trimmed_rem > 200] <- 200
 
+par(
+  oma = c(0, 0, 0, 0),
+  mar = c(0, 0, 0, 0),
+  mgp = c(0, 0, 0)
+)
+
+
 terra::plot(
   hillshade, 
   col = grey(0:100/100), 
   legend = FALSE, 
   axes = FALSE,
+  oma = NA,
   mar = NA,
   xaxs="i", 
   yaxs="i"
 )
+
 
 terra::plot(
   trimmed_rem,
   col = viridis::mako(50, direction = -1), 
   legend = FALSE, 
   axes = FALSE,
-  mar = NA,
   add = TRUE,
-  alpha = 0.75,
-  xaxs="i", 
-  yaxs="i"
+  alpha = 0.75
 )
 ```
 
-![](man/figures/README-unnamed-chunk-5-1.png)<!-- -->
+![](man/figures/README-2022-08-31-final_fig-1.png)<!-- -->
 
 ## Code of Conduct
 

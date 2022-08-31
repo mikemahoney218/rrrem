@@ -9,7 +9,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  fig.width = 6
+  fig.width = 7
 )
 ```
 
@@ -52,10 +52,6 @@ dem <- sf::st_as_sf(
   terrainr::get_tiles() |> 
   purrr::chuck("elevation") |> 
   terrainr::merge_rasters()
-
-terra::plot(
-  terra::rast(dem)
-)
 ```
 
 With our data downloaded, we're ready to move on to actually using rrrem. The main workhorse of this package is the `make_rem()` function, which takes a DEM (and optionally, a line geometry reflecting your "target" river to visualize) and converts it into an REM. We can call that function like this:
@@ -76,7 +72,7 @@ terra::plot(rem)
 
 Or, with a little more elbow grease, we can combine it with other functions from `terra` to make more customizable visualizations:
 
-```{r, fig.width=6, fig.height=6}
+```{r 2022-08-31-final_fig, fig.width=7, fig.height=7}
 dem <- terra::rast(dem)
 
 hillshade <- terra::shade(
@@ -87,30 +83,34 @@ hillshade <- terra::shade(
 trimmed_rem <- rem
 trimmed_rem[trimmed_rem > 200] <- 200
 
+par(
+  oma = c(0, 0, 0, 0),
+  mar = c(0, 0, 0, 0),
+  mgp = c(0, 0, 0)
+)
+
+
 terra::plot(
   hillshade, 
   col = grey(0:100/100), 
   legend = FALSE, 
   axes = FALSE,
+  oma = NA,
   mar = NA,
   xaxs="i", 
   yaxs="i"
 )
+
 
 terra::plot(
   trimmed_rem,
   col = viridis::mako(50, direction = -1), 
   legend = FALSE, 
   axes = FALSE,
-  mar = NA,
   add = TRUE,
-  alpha = 0.75,
-  xaxs="i", 
-  yaxs="i"
+  alpha = 0.75
 )
 ```
-
-
 
 ## Code of Conduct
 
