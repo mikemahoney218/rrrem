@@ -46,6 +46,7 @@
 <span>  <span class="va">points_on_line</span>,</span>
 <span>  <span class="va">dem</span>,</span>
 <span>  algorithm <span class="op">=</span> <span class="st">"invdist:power=1"</span>,</span>
+<span>  gdal_options <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -69,6 +70,12 @@ See the gdal_grid documentation at <a href="https://gdal.org/programs/gdal_grid.
 for the available algorithms and customization options.</p></dd>
 
 
+<dt>gdal_options</dt>
+<dd><p>Optionally, a vector of options to pass to
+<code>gdal_grid</code> via <code><a href="https://r-spatial.github.io/sf/reference/gdal_utils.html" class="external-link">sf::gdal_utils()</a></code>. See the full list of options online at
+https://gdal.org/programs/gdal_grid.html. See Details.</p></dd>
+
+
 <dt>quiet</dt>
 <dd><p>Boolean: should execution proceed "quietly", without messages
 (<code>TRUE</code>) or should progress updates be posted during centerline download and
@@ -81,6 +88,18 @@ interpolation (<code>FALSE</code>)?</p></dd>
 
 <p>A SpatRaster object (as created by <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">terra::rast()</a></code>), representing the
 outputs of the interpolation process.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The bulk of the processing time for this function involves calling
+<code>gdal_grid</code> via <code><a href="https://r-spatial.github.io/sf/reference/gdal_utils.html" class="external-link">sf::gdal_utils()</a></code>. The results from this function call are
+then written out as a TIFF file before being read back into the R session.</p>
+<p>You can choose to pass options to <code>gdal_grid</code>. However, passing any of
+<code>-a</code>, <code>-txe</code>, <code>-tye</code>, <code>-tr</code>, <code>-outsize</code>, and <code>zfield</code> will cause an error.
+Possible options to speed up processing include passing
+<code>c("-co", "NUM_THREADS=ALL_CPUS")</code> in order to write the TIFF using multiple
+threads, or <code>c("--config" "GDAL_CACHEMAX", "30%")</code> (or another value) to
+increase cache utilization above the default 5%.</p>
     </div>
 
     <div class="section level2">
