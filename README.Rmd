@@ -1,0 +1,93 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# rrrem
+
+<!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+<!-- badges: end -->
+
+rrrem is an **R** port of the [**R**iver**R**EM](https://github.com/klarrieu/RiverREM) package, letting you use packages in R's spatial programming ecosystem to produce relative elevation models. Specifically, this package implements the river-retrieving and REM-producing elements of RiverREM; because R has such strong graphing support for raster graphics, the visualizations are not re-implemented (but are easily re-created using either base R or ggplot2). 
+
+Please note that this package was made _extremely_ quickly and is effectively untested -- there may be some sharp edges yet to be sanded down, and 
+
+## Installation
+
+You can install the development version of rrrem like so:
+
+``` r
+remotes::install_github("mikemahoney218/rrrem")
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+```{r example}
+library(rrrem)
+
+dem <- sf::st_as_sf(
+  data.frame(
+    y = c(43.412402, 43.489347), 
+    x = c(-123.591623, -123.479736)
+  ),
+  coords = c("x", "y"),
+  crs = 4326
+) |> 
+  sf::st_transform(3857) |> 
+  terrainr::get_tiles() |> 
+  purrr::chuck("elevation") |> 
+  terrainr::merge_rasters()
+
+rem <- make_rem(dem)
+
+terra::plot(rem)
+```
+
+```{r}
+dem <- terra::rast(dem)
+
+hillshade <- terra::shade(
+  terra::terrain(dem, "slope", unit = "radians"),
+  terra::terrain(dem, "aspect", unit = "radians")
+)
+
+trimmed_rem <- rem
+trimmed_rem[trimmed_rem > 200] <- 200
+
+par(mar = c(0, 0, 0, 0))
+terra::plot(
+  hillshade, 
+  col = grey(0:100/100), 
+  legend = FALSE, 
+  axes = FALSE,
+  xaxs="i", 
+  yaxs="i"
+)
+
+terra::plot(
+  trimmed_rem,
+  col = viridis::mako(50, direction = -1), 
+  legend = FALSE, 
+  axes = FALSE,
+  add = TRUE,
+  alpha = 0.75,
+  xaxs="i", 
+  yaxs="i"
+)
+```
+
+
+
