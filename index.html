@@ -86,12 +86,7 @@
 <span>  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="fl">3857</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">terrainr</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/terrainr/reference/get_tiles.html" class="external-link">get_tiles</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/pluck.html" class="external-link">chuck</a></span><span class="op">(</span><span class="st">"elevation"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">terrainr</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/terrainr/reference/merge_rasters.html" class="external-link">merge_rasters</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span></span>
-<span>  <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">dem</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-2-1.png"><!-- --></p>
+<span>  <span class="fu">terrainr</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/terrainr/reference/merge_rasters.html" class="external-link">merge_rasters</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>With our data downloaded, we’re ready to move on to actually using rrrem. The main workhorse of this package is the <code><a href="reference/make_rem.html">make_rem()</a></code> function, which takes a DEM (and optionally, a line geometry reflecting your “target” river to visualize) and converts it into an REM. We can call that function like this:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mikemahoney218.github.io/rrrem/">rrrem</a></span><span class="op">)</span></span>
@@ -114,28 +109,34 @@
 <span><span class="va">trimmed_rem</span> <span class="op">&lt;-</span> <span class="va">rem</span></span>
 <span><span class="va">trimmed_rem</span><span class="op">[</span><span class="va">trimmed_rem</span> <span class="op">&gt;</span> <span class="fl">200</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">200</span></span>
 <span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span></span>
+<span>  oma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span>
+<span>  mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span>
+<span>  mgp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span></span>
 <span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span></span>
 <span>  <span class="va">hillshade</span>, </span>
 <span>  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/gray.html" class="external-link">grey</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">100</span><span class="op">/</span><span class="fl">100</span><span class="op">)</span>, </span>
 <span>  legend <span class="op">=</span> <span class="cn">FALSE</span>, </span>
 <span>  axes <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  oma <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  mar <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  xaxs<span class="op">=</span><span class="st">"i"</span>, </span>
 <span>  yaxs<span class="op">=</span><span class="st">"i"</span></span>
 <span><span class="op">)</span></span>
+<span></span>
 <span></span>
 <span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span></span>
 <span>  <span class="va">trimmed_rem</span>,</span>
 <span>  col <span class="op">=</span> <span class="fu">viridis</span><span class="fu">::</span><span class="fu">mako</span><span class="op">(</span><span class="fl">50</span>, direction <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span>, </span>
 <span>  legend <span class="op">=</span> <span class="cn">FALSE</span>, </span>
 <span>  axes <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  mar <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  add <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  alpha <span class="op">=</span> <span class="fl">0.75</span>,</span>
-<span>  xaxs<span class="op">=</span><span class="st">"i"</span>, </span>
-<span>  yaxs<span class="op">=</span><span class="st">"i"</span></span>
+<span>  alpha <span class="op">=</span> <span class="fl">0.75</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-5-1.png"><!-- --></p>
+<p><img src="reference/figures/README-2022-08-31-final_fig-1.png"><!-- --></p>
 </div>
 <div class="section level2">
 <h2 id="code-of-conduct">Code of Conduct<a class="anchor" aria-label="anchor" href="#code-of-conduct"></a>
