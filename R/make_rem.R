@@ -13,6 +13,9 @@
 #' a name in OpenStreetMap will be used instead.
 #' @param n_points The number of sample points along the river to base
 #' interpolation on. More points will make interpolation take longer.
+#' @param algorithm A string to control the interpolation algorithm.
+#' See the gdal_grid documentation at <https://gdal.org/programs/gdal_grid.html>
+#' for the available algorithms and customization options.
 #' @param quiet Boolean: should execution proceed "quietly", without messages
 #' (`TRUE`) or should progress updates be posted during centerline download and
 #' interpolation (`FALSE`)?
@@ -24,7 +27,7 @@
 #' make_rem(system.file("elevation.tiff", package = "rrrem"))
 #'
 #' @export
-make_rem <- function(dem, centerline = NULL, n_points = 1000, quiet = TRUE) {
+make_rem <- function(dem, centerline = NULL, n_points = 1000, algorithm = "invdist:power=1", quiet = TRUE) {
   if (!inherits(dem, "SpatRaster")) dem <- terra::rast(dem)
   if (sf::st_is_longlat(dem)) {
     rlang::abort(
@@ -42,6 +45,7 @@ make_rem <- function(dem, centerline = NULL, n_points = 1000, quiet = TRUE) {
   interpolated_raster <- calc_centerline_interpolation(
     center_points,
     dem,
+    algorithm = algorithm,
     quiet = quiet
   )
 

@@ -1,11 +1,23 @@
 #' Interpolate elevations from points along a centerline
 #'
+#' @details
+#' The bulk of the processing time for this function involves calling
+#' `gdal_grid` via [sf::gdal_utils()]. The results from this function call are
+#' then written out as a TIFF file before being read back into the R session.
+#'
+#' You can choose to pass options to `gdal_grid`. However, passing any of
+#' `-a`, `-txe`, `-tye`, `-tr`, `-outsize`, and `zfield` will cause an error.
+#' Possible options to speed up processing include passing
+#' `c("-co", "NUM_THREADS=ALL_CPUS")` in order to write the TIFF using multiple
+#' threads, or `c("--config" "GDAL_CACHEMAX", "30%")` (or another value) to
+#' increase cache utilization above the default 5%.
+#'
 #' @param points_on_line The output from [points_along_line()]: an sfc object
 #' of points along the centerline, which will be used as data points for
 #' interpolation.
-#' @param algorithm A string to control the interpolation algorithm.
-#' See the gdal_grid documentation at <https://gdal.org/programs/gdal_grid.html>
-#' for the available algorithms and customization options.
+#' @param gdal_options Optionally, a vector of options to pass to
+#' `gdal_grid` via [sf::gdal_utils()]. See the full list of options online at
+#' https://gdal.org/programs/gdal_grid.html. See Details.
 #' @inheritParams make_rem
 #'
 #' @return A SpatRaster object (as created by [terra::rast()]), representing the
@@ -22,7 +34,13 @@
 #' )
 #'
 #' @export
-calc_centerline_interpolation <- function(points_on_line, dem, algorithm = "invdist:power=1", quiet = TRUE) {
+calc_centerline_interpolation <- function(
+  points_on_line,
+  dem,
+  algorithm = "invdist:power=1",
+  gdal_options = NULL,
+  quiet = TRUE
+) {
   if (!inherits(dem, "SpatRaster")) dem <- terra::rast(dem)
   if (sf::st_is_longlat(dem)) {
     rlang::abort(
@@ -62,7 +80,8 @@ calc_centerline_interpolation <- function(points_on_line, dem, algorithm = "invd
       "-txe", ext[["xmin"]], ext[["xmax"]],
       "-tye", ext[["ymin"]], ext[["ymax"]],
       "-zfield", "z",
-      "-a", algorithm
+      "-a", algorithm,
+      gdal_options
     )
   )
 
